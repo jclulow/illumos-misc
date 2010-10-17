@@ -1,0 +1,18 @@
+# if you want the system console on ttya...
+#serial --unit=0 --speed=9600
+#terminal serial
+
+default=0
+timeout=30
+min_mem64=1000
+
+title Chainload to first harddisk
+	rootnoverify (hd0)
+	chainloader +1
+title OpenIndiana Development oi_147 X86 boot image 
+	kernel$ /oi/platform/i86pc/kernel/$ISADIR/unix -B console=ttya,install_media=http://10.1.1.10:5555,install_service=oi_x86,install_svc_address=10.1.1.10:5555
+	module$ /oi/platform/i86pc/$ISADIR/boot_archive
+title OpenIndiana Development oi_147 X86 Automated Install 
+	kernel$ /oi/platform/i86pc/kernel/$ISADIR/unix -B console=ttya,install=true,install_media=http://10.1.1.10:5555,install_service=oi_x86,install_svc_address=10.1.1.10:5555
+	module$ /oi/platform/i86pc/$ISADIR/boot_archive
+

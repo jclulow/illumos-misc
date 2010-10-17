@@ -2,8 +2,8 @@
 
 # AI Install Server Vhost:
 <VirtualHost *:5555>
-  DocumentRoot "/export/install"
-  <Directory "/export/install">
+  DocumentRoot "/export/install/ai_image"
+  <Directory "/export/install/ai_image">
     Options Indexes FollowSymLinks
     Order allow,deny
     Allow from all
