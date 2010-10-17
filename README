@@ -1,2 +1,6 @@
 Miscellanous scripts for Illumos/OpenIndiana, initially focused on 
 netbooting and automated installation from other server OSes.
+
+Many ideas from the OpenIndiana Wiki, particularly:
+  http://wiki.openindiana.org/oi/Setting+up+a+mirror
+

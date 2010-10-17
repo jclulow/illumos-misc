@@ -1,0 +1,26 @@
+{
+  "packages": [], 
+  "publishers": [
+    {
+      "alias": "", 
+      "intermediate_certs": [], 
+      "name": "openindiana.org", 
+      "packages": [], 
+      "repositories": [
+        {
+          "collection_type": "core", 
+          "description": "", 
+          "legal_uris": [], 
+          "mirrors": [], 
+          "name": "package repository", 
+          "origins": [], 
+          "refresh_seconds": 14400, 
+          "registration_uri": "", 
+          "related_uris": []
+        }
+      ], 
+      "signing_ca_certs": []
+    }
+  ], 
+  "version": 1
+}

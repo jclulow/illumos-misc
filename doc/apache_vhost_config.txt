@@ -1,0 +1,45 @@
+# NB: don't forget Listen 0.0.0.0:5555, etc, directives.
+
+# AI Install Server Vhost:
+<VirtualHost *:5555>
+  DocumentRoot "/export/install"
+  <Directory "/export/install">
+    Options Indexes FollowSymLinks
+    Order allow,deny
+    Allow from all
+  </Directory>
+  <Directory "/export/install/cgi-bin">
+    Options Indexes FollowSymLinks ExecCGI
+    Order allow,deny
+    Allow from all
+  </Directory>
+  ScriptAliasMatch ^/manifest.xml /export/install/cgi-bin/ai-manifest.ksh
+</VirtualHost>
+
+# IPS Repository Vhost:
+<VirtualHost *:10000>
+  DocumentRoot /export/install/repo
+  <Directory /sysmgr/apps/illumos/openindiana/repo>
+    Options -All
+    Order allow,deny
+    Allow from all
+  </Directory>
+  <Directory "/export/install/cgi-bin">
+    Options Indexes FollowSymLinks ExecCGI
+    Order allow,deny
+    Allow from all
+  </Directory>
+  SetOutputFilter DEFLATE
+  MaxKeepAliveRequests 10000
+  AllowEncodedSlashes On
+  AcceptPathInfo On
+  SetEnvIf Request_URI .*/file/[01]/.* no-gzip no-vary
+  Header set Cache-Control no-cache
+  RewriteEngine On
+  RewriteRule ^/file/[01]/(..)(.*) /export/install/repo/file/$1/$1$2
+  RewriteRule ^/catalog/[01]/(.*)  /export/intsall/repo/catalog/$1
+  RewriteRule ^/versions/([0])/    /versions/$1
+  RewriteRule ^/publisher/([01])/  /publisher/$1
+  ScriptAliasMatch ^/manifest/0.*  /export/install/cgi-bin/repo-manifest.ksh
+</VirtualHost>
+
