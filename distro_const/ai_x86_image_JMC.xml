@@ -1,0 +1,697 @@
+<!--
+    CDDL HEADER START
+   
+    The contents of this file are subject to the terms of the
+    Common Development and Distribution License (the "License").
+    You may not use this file except in compliance with the License.
+   
+    You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+    or http://www.opensolaris.org/os/licensing.
+    See the License for the specific language governing permissions
+    and limitations under the License.
+   
+    When distributing Covered Code, include this CDDL HEADER in each
+    file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+    If applicable, add the following below this CDDL HEADER, with the
+    fields enclosed by brackets "[]" replaced with your own identifying
+    information: Portions Copyright [yyyy] [name of copyright owner]
+   
+    CDDL HEADER END
+   
+    Portions Copyright 2010 Joshua M. Clulow (josh@sysmgr.org)
+
+    Copyright (c) 2008, 2010, Oracle and/or its affiliates. All rights reserved.
+
+    XML specification for building an OpenIndiana installer iso image
+-->
+<distribution name="OpenIndiana_AI_X86">
+	<distro_constr_params>
+		<!--
+		     Where to build. This can be a zfs dataset or a mountpoint.
+		     The area will be created if it doesn't exist. If the build_area
+		     is not a zfs dataset or mountpoint, checkpointing will not
+		     be enabled.
+		-->
+		<build_area>rpool/dc</build_area>
+		<distro_constr_flags>
+			<!--
+			     Controls whether the DC should stop
+			     if there is an error when the DC is running 
+			-->
+			<stop_on_error>true</stop_on_error>
+			<!--
+			     You can specify the step to resume the
+			     build from here with the resume_from
+			     attribute field of checkpoint_enable.
+			     This value will be overridden by
+			     the command line if the -r flag is used.
+			     Valid values are step
+			     numbers or name
+			-->
+			<checkpoint_enable>
+				<!--
+				     true implies Checkpointing is enabled
+				-->
+				true
+			</checkpoint_enable>
+		</distro_constr_flags>
+		<output_image>
+			<!--
+			     List of finalizer scripts to be run. They are used
+			     to customize the image and will be run in the
+			     order listed. The name of the checkpoint to
+			     be created when this script is run is required.
+			     The checkpoint message is displayed when the
+			     step is run and is optional.
+			     There are 5 standard arguments that are passed to
+			     every finalizer script (manifest socket, pkg_image path,
+			     tmp dir, boot archive build area, media dir). You may also
+			     specify additional arguments (arg6+) in the argslist.
+			     This argslist is a whitespace-separated list of double
+			     quoted strings.
+			-->
+			<finalizer>
+				<script name="/usr/share/distro_const/im_pop.py">
+					<checkpoint
+						name="im-pop"
+						message="Image area creation"/>
+				</script>
+				<script name="/usr/share/distro_const/pre_boot_archive_pkg_image_mod.py">
+					<checkpoint
+						name="im-mod"
+						message="Image area modifications"/>
+				</script>
+				<script name="/usr/share/distro_const/auto_install/ai_pre_boot_archive_pkg_image_mod">
+					<checkpoint
+						name="ai-im-mod"
+						message="Auto Install Image area modifications"/>
+				</script>
+				<script name="/usr/share/distro_const/boot_archive_initialize.py">
+					<checkpoint
+						name="ba-init"
+						message="Boot archive initialization"/>
+				</script>
+				<script name="/usr/share/distro_const/boot_archive_configure">
+					<checkpoint
+						name="ba-config"
+						message="Boot archive configuration"/>
+					<argslist>
+						".autoinstall"
+					</argslist>
+				</script>
+				<script name="/usr/share/distro_const/auto_install/ai_boot_archive_configure">
+					<checkpoint
+						name="ai-ba-config"
+						message="Auto Install boot archive configuration"/>
+				</script>
+				<script name="/usr/share/distro_const/boot_archive_archive.py">
+					<checkpoint
+						name="ba-arch"
+						message="Boot archive archiving (64-bit)"/>
+					<argslist>"amd64"</argslist>
+				</script>
+				<script name="/usr/share/distro_const/boot_archive_archive_32">
+					<checkpoint
+						name="ba-arch-32"
+						message="Boot archive archiving (32-bit)"/>
+					<argslist>"x86"</argslist>
+				</script>
+
+				<script name="/usr/share/distro_const/post_boot_archive_pkg_image_mod_custom">
+					<checkpoint
+						name="post-mod-custom"
+						message="Post boot archive image area custom modification"/>
+				</script>
+				<script name="/usr/share/distro_const/grub_setup.py">
+					<checkpoint
+						name="grub-setup"
+						message="Grub menu setup"/>
+					<argslist>
+						"ai"
+					</argslist>
+				</script>
+				<script name="/usr/share/distro_const/post_boot_archive_pkg_image_mod">
+					<checkpoint
+						name="post-mod"
+						message="Post boot archive image area modification"/>
+					<argslist>
+						"usr_zlib_compression=lzma"
+					</argslist>
+				</script>
+				<script name="/usr/share/distro_const/auto_install/ai_publish_pkg">
+					<checkpoint
+						name="ai-publish-pkg"
+						message="Publish Package"/>
+					<!--
+					     The following arguments are optional.
+
+					     If not specified the arguments default as:
+					         pkg_name - image/<distribution name>@<AI pkg version>
+					         pkg_repo - file://<MEDIA_DIR>/ai_image_repo
+					         publisher_prefix - ai.openindiana.org
+					             Note: See pkg(5) and pkg.depotd(1M) for a description
+					                   of these optional arguments.
+					<argslist>
+						"pkg_name=<package name>"
+						"pkg_repo=<package repo>"
+						"publisher_prefix=<publisher prefix>"
+					</argslist>
+					-->
+				</script>
+				<script name="/usr/share/distro_const/create_iso">
+					<checkpoint
+						name="iso"
+						message="ISO image creation"/>
+				</script>
+				<script name="/usr/share/distro_const/create_usb">
+					<checkpoint
+						name="usb"
+						message="USB image creation"/>
+				</script>
+			</finalizer>
+			<boot_archive>
+				<!--
+				     If/how to compress the boot archive. Valid
+				     types are gzip and none
+				-->
+				<compression type="gzip" level="9"/>
+
+                                <!--
+                                    SMF service profiles to apply to the boot archive.
+                                    If the "use_build_sys_file" attribute is set to true, the build
+                                    system's copy of the file is used.  If not specified, or
+                                    "use_build_sys_file" is set to false,
+                                    the image's copy of the file is used.
+
+                                    Service profiles will be applied to the root archive
+                                    in the order listed.
+                                -->
+                                <smf_service_profile>
+                                        <profile path="/etc/svc/profile/generic_limited_net.xml"
+                                                 use_build_sys_file="false"/>
+                                        <profile path="/var/svc/profile/generic_limited_net.xml"
+                                                 use_build_sys_file="false"/>
+                                        <profile path="/usr/share/distro_const/generic_live.xml"
+                                                 use_build_sys_file="true"/>
+                                        <profile path="/usr/share/distro_const/auto_install/ai_live.xml"
+                                                 use_build_sys_file="true"/>
+                                        <profile path="/etc/svc/profile/ns_files.xml"
+                                                 use_build_sys_file="false"/>
+                                        <profile path="/var/svc/profile/ns_files.xml"
+                                                 use_build_sys_file="false"/>
+                                </smf_service_profile>
+			</boot_archive>
+		</output_image>
+	</distro_constr_params>
+	<img_params>
+		<!--
+		     The preferred authority to install packages into the
+		     pkg_image area from.
+		     The default url is: http://pkg.openindiana.org/stable
+		     The default authname is openindiana.org
+		-->
+		<pkg_repo_default_authority>
+			<main
+				url="http://pkg.openindiana.org/dev"
+				authname="openindiana.org"/>
+			<!--
+			     If you want to use one or more  mirrors that are
+			     setup for the authority, specify the urls here.
+			-->
+			<!--
+			     Uncomment before using
+			<mirror url="" />
+			-->
+		</pkg_repo_default_authority>
+		<!--
+		     Any additional non-preferred authorities to pull packages
+		     from should be specified here. Multiple additional
+		     authorities may be specified.
+		     If you want to use one or more  mirrors that are
+		     setup for the authority, specify the urls here.
+		-->
+		<pkg_repo_addl_authority>
+			<main
+				url="http://pkg.openindiana.org/legacy"
+				authname="opensolaris.org"/>
+			<mirror url="" />
+		</pkg_repo_addl_authority>
+		<!--
+		     The default preferred authority to be used by the system
+		     after it has been installed.
+		     The default url is: http://pkg.openindiana.org/stable
+		     The default authname is openindiana.org
+		     If you want to use one or more  mirrors that are
+		     setup for the authority, specify the urls here.
+		-->
+		<post_install_repo_default_authority>
+			<main
+				url="http://pkg.openindiana.org/dev"
+				authname="openindiana.org"/>
+			<!--
+			     Uncomment before using.
+			<mirror url="" />
+			-->
+		</post_install_repo_default_authority>
+		<!--
+		     Any additional non-preferred authorities to use after the
+		     system has been installed. Multiple additional authorities
+		     may be specified.
+		     If you want to use one or more  mirrors that are
+		     setup for the authority, specify the urls here.
+		-->
+		<post_install_repo_addl_authority>
+			<main
+				url="http://pkg.openindiana.org/legacy"
+				authname="opensolaris.org"/>
+			<mirror url="" />
+		</post_install_repo_addl_authority>
+
+		<!--
+		     Password for the root user/role in the image.
+                     If not specified, the default value of "openindiana"
+                     will be used
+                -->
+                <rootpass is_plaintext="true">password</rootpass>
+
+		<!--
+		     list of packages used to form the installed image
+		-->
+		<packages>
+			<!--
+			    By default the latest build available, in the
+			    specified IPS repository, is installed.
+			    If another build is required, the build number has
+			    to be appended to the 'entire' package in following
+			    form:
+
+			    <pkg name="pkg:/entire@0.5.11-0.build#/>
+			-->
+			<pkg name="pkg:/entire@0.5.11-0.147"/>
+			<pkg name="pkg:/SUNWcs"/>
+			<pkg name="pkg:/SUNWcsd"/>
+			<pkg name="pkg:/compress/bzip2"/>
+			<pkg name="pkg:/compress/gzip"/>
+			<pkg name="pkg:/compress/p7zip"/>
+			<pkg name="pkg:/compress/unzip"/>
+			<pkg name="pkg:/compress/zip"/>
+			<pkg name="pkg:/data/iso-codes"/>
+			<pkg name="pkg:/developer/debug/mdb"/>
+			<pkg name="pkg:/developer/debug/mdb/module/module-fibre-channel"/>
+			<pkg name="pkg:/developer/debug/mdb/module/module-qlc"/>
+			<pkg name="pkg:/developer/dtrace"/>
+			<pkg name="pkg:/developer/dtrace/toolkit"/>
+			<pkg name="pkg:/developer/linker"/>
+			<pkg name="pkg:/developer/macro/cpp"/>
+			<pkg name="pkg:/developer/object-file"/>
+			<pkg name="pkg:/diagnostic/cpu-counters"/>
+			<pkg name="pkg:/diagnostic/ddu"/>
+			<pkg name="pkg:/driver/crypto/tpm"/>
+			<pkg name="pkg:/driver/firewire"/>
+			<pkg name="pkg:/driver/graphics/agpgart"/>
+			<pkg name="pkg:/driver/graphics/atiatom"/>
+			<pkg name="pkg:/driver/graphics/drm"/>
+			<pkg name="pkg:/driver/i86pc/fipe"/>
+			<pkg name="pkg:/driver/i86pc/ioat"/>
+			<pkg name="pkg:/driver/i86pc/platform"/>
+			<pkg name="pkg:/driver/network/afe"/>
+			<pkg name="pkg:/driver/network/amd8111s"/>
+			<pkg name="pkg:/driver/network/arn"/>
+			<pkg name="pkg:/driver/network/atge"/>
+			<pkg name="pkg:/driver/network/ath"/>
+			<pkg name="pkg:/driver/network/atu"/>
+			<pkg name="pkg:/driver/network/bfe"/>
+			<pkg name="pkg:/driver/network/bge"/>
+			<pkg name="pkg:/driver/network/bnx"/>
+			<pkg name="pkg:/driver/network/bnxe"/>
+			<pkg name="pkg:/driver/network/bpf"/>
+			<pkg name="pkg:/driver/network/ce"/>
+			<pkg name="pkg:/driver/network/chxge"/>
+			<pkg name="pkg:/driver/network/dmfe"/>
+			<pkg name="pkg:/driver/network/e1000g"/>
+			<pkg name="pkg:/driver/network/fcip"/>
+			<pkg name="pkg:/driver/network/fcp"/>
+			<pkg name="pkg:/driver/network/fcsm"/>
+			<pkg name="pkg:/driver/network/fp"/>
+			<pkg name="pkg:/driver/network/hxge"/>
+			<pkg name="pkg:/driver/network/ib"/>
+			<pkg name="pkg:/driver/network/ibd"/>
+			<pkg name="pkg:/driver/network/igb"/>
+			<pkg name="pkg:/driver/network/ipw"/>
+			<pkg name="pkg:/driver/network/iwh"/>
+			<pkg name="pkg:/driver/network/iwi"/>
+			<pkg name="pkg:/driver/network/iwk"/>
+			<pkg name="pkg:/driver/network/iwp"/>
+			<pkg name="pkg:/driver/network/ixgb"/>
+			<pkg name="pkg:/driver/network/ixgbe"/>
+			<pkg name="pkg:/driver/network/mwl"/>
+			<pkg name="pkg:/driver/network/mxfe"/>
+			<pkg name="pkg:/driver/network/myri10ge"/>
+			<pkg name="pkg:/driver/network/nge"/>
+			<pkg name="pkg:/driver/network/ntxn"/>
+			<pkg name="pkg:/driver/network/nxge"/>
+			<pkg name="pkg:/driver/network/pcan"/>
+			<pkg name="pkg:/driver/network/pcwl"/>
+			<pkg name="pkg:/driver/network/platform"/>
+			<pkg name="pkg:/driver/network/qlc"/>
+			<pkg name="pkg:/driver/network/ral"/>
+			<pkg name="pkg:/driver/network/rge"/>
+			<pkg name="pkg:/driver/network/rpcib"/>
+			<pkg name="pkg:/driver/network/rtls"/>
+			<pkg name="pkg:/driver/network/rtw"/>
+			<pkg name="pkg:/driver/network/rum"/>
+			<pkg name="pkg:/driver/network/rwd"/>
+			<pkg name="pkg:/driver/network/rwn"/>
+			<pkg name="pkg:/driver/network/sdp"/>
+			<pkg name="pkg:/driver/network/sdpib"/>
+			<pkg name="pkg:/driver/network/sfe"/>
+			<pkg name="pkg:/driver/network/tavor"/>
+			<pkg name="pkg:/driver/network/uath"/>
+			<pkg name="pkg:/driver/network/ural"/>
+			<pkg name="pkg:/driver/network/urtw"/>
+			<pkg name="pkg:/driver/network/vr"/>
+			<pkg name="pkg:/driver/network/wpi"/>
+			<pkg name="pkg:/driver/network/xge"/>
+			<pkg name="pkg:/driver/network/yge"/>
+			<pkg name="pkg:/driver/network/zyd"/>
+			<pkg name="pkg:/driver/pcmcia"/>
+			<pkg name="pkg:/driver/serial/pcser"/>
+			<pkg name="pkg:/driver/serial/usbftdi"/>
+			<pkg name="pkg:/driver/serial/usbsacm"/>
+			<pkg name="pkg:/driver/serial/usbser_edge"/>
+			<pkg name="pkg:/driver/serial/usbser"/>
+			<pkg name="pkg:/driver/serial/usbsksp"/>
+			<pkg name="pkg:/driver/serial/usbsksp/usbs49_fw"/>
+			<pkg name="pkg:/driver/serial/usbsprl"/>
+			<pkg name="pkg:/driver/storage/aac"/>
+			<pkg name="pkg:/driver/storage/adpu320"/>
+			<pkg name="pkg:/driver/storage/ahci"/>
+			<pkg name="pkg:/driver/storage/amr"/>
+			<pkg name="pkg:/driver/storage/arcmsr"/>
+			<pkg name="pkg:/driver/storage/ata"/>
+			<pkg name="pkg:/driver/storage/bcm_sata"/>
+			<pkg name="pkg:/driver/storage/cpqary3"/>
+			<pkg name="pkg:/driver/storage/glm"/>
+			<pkg name="pkg:/driver/storage/lsimega"/>
+			<pkg name="pkg:/driver/storage/marvell88sx"/>
+			<pkg name="pkg:/driver/storage/mega_sas"/>
+			<pkg name="pkg:/driver/storage/mpt_sas"/>
+			<pkg name="pkg:/driver/storage/mr_sas"/>
+			<pkg name="pkg:/driver/storage/nv_sata"/>
+			<pkg name="pkg:/driver/storage/pcata"/>
+			<pkg name="pkg:/driver/storage/pmcs"/>
+			<pkg name="pkg:/driver/storage/sbp2"/>
+			<pkg name="pkg:/driver/storage/scsa1394"/>
+			<pkg name="pkg:/driver/storage/sdcard"/>
+			<pkg name="pkg:/driver/storage/ses"/>
+			<pkg name="pkg:/driver/storage/si3124"/>
+			<pkg name="pkg:/driver/storage/smp"/>
+			<pkg name="pkg:/driver/usb"/>
+			<pkg name="pkg:/driver/usb/ugen"/>
+			<pkg name="pkg:/driver/xvm/pv"/>
+			<pkg name="pkg:/library/libtecla"/>
+			<pkg name="pkg:/library/libxml2"/>
+			<pkg name="pkg:/library/libxslt"/>
+			<pkg name="pkg:/library/security/openssl"/>
+			<pkg name="pkg:/library/zlib"/>
+			<pkg name="pkg:/media/cdrtools"/>
+			<pkg name="pkg:/network/ftp"/>
+			<pkg name="pkg:/network/ipfilter"/>
+			<pkg name="pkg:/network/iscsi/initiator"/>
+			<pkg name="pkg:/network/rsync"/>
+			<pkg name="pkg:/network/ssh"/>
+			<pkg name="pkg:/network/ssh/ssh-key"/>
+			<pkg name="pkg:/network/telnet"/>
+			<pkg name="pkg:/package/pkg"/>
+			<pkg name="pkg:/package/svr4"/>
+			<pkg name="pkg:/release/name"/>
+			<pkg name="pkg:/service/fault-management"/>
+			<pkg name="pkg:/service/management/sysidtool"/>
+			<pkg name="pkg:/service/network/dns/mdns"/>
+			<pkg name="pkg:/service/network/network-clients"/>
+			<pkg name="pkg:/service/network/network-servers"/>
+			<pkg name="pkg:/service/network/ntp"/>
+			<pkg name="pkg:/service/network/smtp/sendmail"/>
+			<pkg name="pkg:/service/network/ssh"/>
+			<pkg name="pkg:/service/network/tftp"/>
+			<pkg name="pkg:/service/network/wpa"/>
+			<pkg name="pkg:/service/picl"/>
+			<pkg name="pkg:/service/resource-pools"/>
+			<pkg name="pkg:/service/security/kerberos-5"/>
+			<pkg name="pkg:/service/storage/fibre-channel/fc-fabric"/>
+			<pkg name="pkg:/service/storage/removable-media"/>
+			<pkg name="pkg:/shell/bash"/>
+			<pkg name="pkg:/storage/mpathadm"/>
+			<pkg name="pkg:/storage/svm"/>
+			<pkg name="pkg:/system/accounting/legacy"/>
+			<pkg name="pkg:/system/boot/grub"/>
+			<pkg name="pkg:/system/boot/real-mode"/>
+			<pkg name="pkg:/system/boot/wanboot"/>
+			<pkg name="pkg:/system/data/keyboard/keytables"/>
+			<pkg name="pkg:/system/data/terminfo"/>
+			<pkg name="pkg:/system/extended-system-utilities"/>
+			<pkg name="pkg:/system/file-system/autofs"/>
+			<pkg name="pkg:/system/file-system/nfs"/>
+			<pkg name="pkg:/system/file-system/smb"/>
+			<pkg name="pkg:/system/file-system/udfs"/>
+			<pkg name="pkg:/system/file-system/zfs"/>
+			<pkg name="pkg:/system/flash/fwflash"/>
+			<pkg name="pkg:/system/install"/>
+			<pkg name="pkg:/system/install/auto-install"/>
+			<pkg name="pkg:/system/install/media/internal"/>
+			<pkg name="pkg:/system/install/tests"/>
+			<pkg name="pkg:/system/kernel"/>
+			<pkg name="pkg:/system/kernel/cpu-counters"/>
+			<pkg name="pkg:/system/kernel/dtrace/providers"/>
+			<pkg name="pkg:/system/kernel/platform"/>
+			<pkg name="pkg:/system/kernel/power"/>
+			<pkg name="pkg:/system/kernel/suspend-resume"/>
+			<pkg name="pkg:/system/kernel/ultra-wideband"/>
+			<pkg name="pkg:/system/library"/>
+			<pkg name="pkg:/system/library/iconv/xsh4/eastern-european"/>
+			<pkg name="pkg:/system/library/install"/>
+			<pkg name="pkg:/system/library/mozilla-nss"/>
+			<pkg name="pkg:/system/library/platform"/>
+			<pkg name="pkg:/system/library/processor"/>
+			<pkg name="pkg:/system/library/storage/fibre-channel/hbaapi"/>
+			<pkg name="pkg:/system/library/storage/fibre-channel/libsun_fc"/>
+			<pkg name="pkg:/system/library/storage/libmpscsi_vhci"/>
+			<pkg name="pkg:/system/library/sysidtool"/>
+			<pkg name="pkg:/system/management/intel-amt"/>
+			<pkg name="pkg:/system/management/sysidtool"/>
+			<pkg name="pkg:/system/network"/>
+			<pkg name="pkg:/system/network/nis"/>
+			<pkg name="pkg:/system/network/routing"/>
+			<pkg name="pkg:/system/network/spdadm"/>
+			<pkg name="pkg:/system/network/wificonfig"/>
+			<pkg name="pkg:/system/prerequisite/gnu"/>
+			<pkg name="pkg:/system/scheduler/fss"/>
+			<pkg name="pkg:/system/storage/fibre-channel/port-utility"/>
+			<pkg name="pkg:/system/storage/luxadm"/>
+			<pkg name="pkg:/system/xopen/xcu4"/>
+			<pkg name="pkg:/system/zones"/>
+			<pkg name="pkg:/text/locale"/>
+			<pkg name="pkg:/web/wget"/>
+		</packages>
+<!--
+     Items below this line are rarely configured
+-->
+		<!--
+		     If/how to compress the live image.
+		     type = compression algorithm to use for pkg.zlib and misc.zlib.
+		     Valid types are lzma, gzip, and none.
+		-->
+		<live_img_compression type="lzma"/>
+		<!--
+			Grub menu modification.  Will use menu.lst if not
+			specified
+		-->
+		<grub_menu_modifications>
+                        <!--
+                            Specify a title for the grub menu after the
+			    image is *installed* using automated installer.
+                            If a title for the grub menu is not specified,
+                            the first line of /etc/release will be used as
+                            the title for the grub menu
+                        -->
+                        <!--
+                            Uncomment before using
+                        <title>Special Grub Title Text</title>
+                        -->
+
+                        <!--
+                            Specify a minimum amount of physical memory (in MB)
+			    which is required to boot automated installer from
+			    network in 64 bit mode (on 64 bit capable machines).
+                            If not specified, 1000 will be used as default
+			    value.
+                        -->
+                        <!--
+                            Uncomment before using
+                        <min_mem64>1000</min_mem64>
+                        -->
+		</grub_menu_modifications>
+                <!--
+		     Indicate whether the IPS index should be generated for
+		     pkg install and uninstall.  The default is to not
+		     generate the IPS search index
+		-->
+		<generate_ips_search_index>
+			false
+		</generate_ips_search_index>
+		<!--
+		     Files and dirs to be included in the boot archive of all media
+		     delivered by this distribution. Boot archive contains the
+		     minimal list of contents in order to be able to
+		     boot and setup a running system. These files and dirs
+		     must exist in the pkg_image area.
+		-->
+		<boot_archive_contents>
+			<base_include type="file">usr/bin/nawk</base_include>
+			<base_include type="file">usr/bin/mkdir</base_include>
+			<base_include type="file">usr/bin/cp</base_include>
+			<base_include type="file">usr/bin/sed</base_include>
+			<base_include type="file">usr/bin/sort</base_include>
+			<base_include type="file">usr/bin/amd64/sort</base_include>
+			<base_include type="file">usr/bin/i86/sort</base_include>
+			<base_include type="file">usr/bin/pkill</base_include>
+			<base_include type="file">usr/sbin/svcadm</base_include>
+			<base_include type="file">usr/sbin/svccfg</base_include>
+			<base_include type="file">usr/sbin/prtconf</base_include>
+			<base_include type="file">usr/sbin/i86/prtconf</base_include>
+			<base_include type="file">usr/sbin/amd64/prtconf</base_include>
+			<base_include type="file">usr/sbin/nwamcfg</base_include>
+			<base_include type="file">usr/sbin/nwamadm</base_include>
+
+			<!-- libraries needed by /usr/sbin/prtconf -->
+			<base_include type="file">usr/lib/libsmbios.so.1</base_include>
+
+			<!-- libraries needed by /usr/sbin/svccfg -->
+			<base_include type="file">usr/lib/libtecla.so.1</base_include>
+			<base_include type="file">usr/lib/libl.so.1</base_include>
+			<base_include type="file">usr/lib/libexacct.so.1</base_include>
+			<base_include type="file">usr/lib/libpool.so.1</base_include>
+			<base_include type="file">usr/lib/libidmap.so.1</base_include>
+			<base_include type="file">usr/lib/libldap.so.5</base_include>
+			<base_include type="file">usr/lib/libldap.so.1</base_include>
+			<base_include type="file">usr/lib/libadutils.so.1</base_include>
+			<base_include type="file">usr/lib/libsasl.so.1</base_include>
+			<base_include type="file">usr/lib/mps/libnspr4.so</base_include>
+			<base_include type="file">usr/lib/mps/libplc4.so</base_include>
+			<base_include type="file">usr/lib/mps/libnss3.so</base_include>
+			<base_include type="file">usr/lib/mps/libssl3.so</base_include>
+			<base_include type="file">usr/lib/mps/libnssutil3.so</base_include>
+			<base_include type="file">usr/lib/mps/libplds4.so</base_include>
+
+			<base_include type="file">usr/sbin/pmadm</base_include>
+			<base_include type="file">usr/sbin/lofiadm</base_include>
+			<base_include type="file">usr/sbin/devfsadm</base_include>
+			<base_include type="file">usr/sbin/modload</base_include>
+			<base_include type="file">usr/sbin/i86/modload</base_include>
+			<base_include type="file">usr/sbin/mount</base_include>
+			<base_include type="file">usr/sbin/hostconfig</base_include>
+			<base_include type="file">usr/sbin/chroot</base_include>
+			<base_include type="file">usr/sbin/syslogd</base_include>
+			<base_include type="file">usr/sbin/df</base_include>
+			<base_include type="file">usr/bin/coreadm</base_include>
+			<base_include type="file">usr/bin/bash</base_include>
+			<base_include type="file">usr/bin/cut</base_include>
+			<base_include type="file">usr/bin/sed</base_include>
+			<base_include type="file">usr/bin/more</base_include>
+			<base_include type="file">usr/bin/cat</base_include>
+			<base_include type="file">usr/bin/echo</base_include>
+			<base_include type="file">usr/bin/false</base_include>
+			<base_include type="file">usr/bin/grep</base_include>
+			<base_include type="file">usr/bin/ls</base_include>
+			<base_include type="file">usr/bin/rm</base_include>
+			<base_include type="file">usr/bin/svcprop</base_include>
+			<base_include type="file">usr/bin/true</base_include>
+			<base_include type="file">usr/bin/cd</base_include>
+			<base_include type="file">usr/bin/test</base_include>
+			<base_include type="file">usr/bin/sleep</base_include>
+			<base_include type="file">usr/bin/expr</base_include>
+			<base_include type="file">usr/bin/isaexec</base_include>
+			<base_include type="file">usr/bin/vi</base_include>
+			<base_include type="file">usr/bin/wget</base_include>
+			<base_include type="file">usr/has/bin/vi</base_include>
+			<base_include type="file">usr/lib/fs/hsfs/fstyp</base_include>
+			<base_include type="file">usr/lib/fs/hsfs/fstyp.so.1</base_include>
+			<base_include type="file">usr/lib/fs/hsfs/mount</base_include>
+			<base_include type="file">usr/lib/fs/tmpfs/mount</base_include>
+			<base_include type="file">usr/lib/fs/ufs/fstyp</base_include>
+			<base_include type="file">usr/lib/fs/ufs/fstyp.so.1</base_include>
+			<base_include type="file">usr/lib/fs/ufs/mount</base_include>
+			<base_include type="file">usr/lib/libfstyp.so.1</base_include>
+			<base_include type="file">usr/lib/platexec</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_audio_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_cfg_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_disk_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_fssnap_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_ieee1394_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_lofi_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_md_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_misc_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_misc_link_i386.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_port_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_ramdisk_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_sgen_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_tape_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_usb_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/linkmod/SUNW_zfs_link.so</base_include>
+			<base_include type="file">usr/lib/devfsadm/devfsadmd</base_include>
+			<base_include type="file">usr/lib/libm.so.2</base_include>
+			<base_include type="file">usr/lib/libm.so</base_include>
+			<base_include type="file">usr/lib/libfstyp.so</base_include>
+			<base_include type="file">usr/lib/libz.so</base_include>
+			<base_include type="file">usr/lib/libz.so.1</base_include>
+			<base_include type="file">usr/bin/i86/ksh93</base_include>
+			<base_include type="file">usr/lib/isaexec</base_include>
+			<base_include type="file">usr/lib/libast.so.1</base_include>
+			<base_include type="file">usr/lib/libcmd.so.1</base_include>
+			<base_include type="file">usr/lib/libdll.so.1</base_include>
+			<base_include type="file">usr/lib/libshell.so.1</base_include>
+			<base_include type="file">usr/lib/libcrypt.so.1</base_include>
+
+			<!-- libraries needed by /usr/bin/wget -->
+			<base_include type="file">usr/lib/libidn.so.11</base_include>
+			<base_include type="file">usr/lib/libidn.so.11.5.38</base_include>
+
+			<base_include type="file">usr/lib/libmapmalloc.so.1</base_include>
+			<base_include type="file">usr/sfw/lib/libcrypto.so.0.9.8</base_include>
+			<base_include type="file">usr/sfw/lib/libssl.so.0.9.8</base_include>
+			<base_include type="file">usr/share/lib/xml/dtd/service_bundle.dtd.1</base_include>
+			<base_include type="file">var/sadm/install/admin/default</base_include>
+			<base_include type="file">var/sadm/system/admin/default_java</base_include>
+			<base_include type="file">var/sadm/install/contents</base_include>
+			<base_include type="file">var/adm/utmpx</base_include>
+			<base_include type="file">var/adm/wtmpx</base_include>
+			<base_include type="file">var/adm/aculog</base_include>
+			<base_include type="file">var/lib/postrun/postrun-runq</base_include>
+			<base_include type="file">var/lib/postrun/postrun</base_include>
+			<base_include type="file">var/log/postrun.log</base_include>
+			<base_include type="file">var/log/authlog</base_include>
+			<base_include type="file">var/log/syslog</base_include>
+			<base_include type="file">var/saf/zsmon/log</base_include>
+			<base_include type="file">var/spool/cron/crontabs/adm</base_include>
+			<base_include type="file">var/spool/cron/crontabs/root</base_include>
+			<base_include type="file">var/nis/NIS+LDAPmapping.template</base_include>
+			<base_include type="file">var/yp/aliases</base_include>
+			<base_include type="file">var/yp/nicknames</base_include>
+			<base_include type="dir">kernel</base_include>
+			<base_include type="dir">boot</base_include>
+			<base_include type="dir">platform</base_include>
+			<base_include type="dir">system</base_include>
+			<base_include type="dir">lib</base_include>
+			<base_include type="dir">sbin</base_include>
+			<base_include type="dir">dev</base_include>
+			<base_include type="dir">devices</base_include>
+			<base_include type="dir">root</base_include>
+			<base_include type="dir">jack</base_include>
+			<base_include type="dir">etc</base_include>
+			<base_include type="dir">var/svc/manifest</base_include>
+			<base_include type="dir">var/svc/profile</base_include>
+			<base_include type="dir">var/sadm</base_include>
+			<base_exclude type="dir">var/sadm/pkg</base_exclude>
+		</boot_archive_contents>
+	</img_params>
+</distribution>
