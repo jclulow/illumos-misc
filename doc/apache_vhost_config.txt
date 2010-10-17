@@ -18,8 +18,8 @@
 
 # IPS Repository Vhost:
 <VirtualHost *:10000>
-  DocumentRoot /export/install/repo
-  <Directory /sysmgr/apps/illumos/openindiana/repo>
+  DocumentRoot "/export/install/repo"
+  <Directory "/export/install/repo">
     Options -All
     Order allow,deny
     Allow from all
