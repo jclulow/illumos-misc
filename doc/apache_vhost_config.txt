@@ -37,7 +37,7 @@
   Header set Cache-Control no-cache
   RewriteEngine On
   RewriteRule ^/file/[01]/(..)(.*) /export/install/repo/file/$1/$1$2
-  RewriteRule ^/catalog/[01]/(.*)  /export/intsall/repo/catalog/$1
+  RewriteRule ^/catalog/[01]/(.*)  /export/install/repo/catalog/$1
   RewriteRule ^/versions/([0])/    /versions/$1
   RewriteRule ^/publisher/([01])/  /publisher/$1
   ScriptAliasMatch ^/manifest/0.*  /export/install/cgi-bin/repo-manifest.ksh
