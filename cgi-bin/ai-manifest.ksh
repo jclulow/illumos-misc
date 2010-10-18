@@ -51,7 +51,7 @@ EOF
             </property_group>
 
             <property_group name="root_account" type="application">
-              <propval name="password" type="astring" value="$5$VgppCOxA$ycFmYW4ObRRHhtsGEygDdexk5bugqgSiaSR9niNCouC"/>
+              <propval name="password" type="astring" value="\$5\$VgppCOxA\$ycFmYW4ObRRHhtsGEygDdexk5bugqgSiaSR9niNCouC"/>
               <propval name="type" type="astring" value="role"/>
             </property_group>
 
