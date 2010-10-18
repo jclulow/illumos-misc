@@ -196,6 +196,7 @@ library/zlib
 media/cdrtools
 naming/ldap
 network/bridging
+network/ftp
 network/dns/bind
 network/ipfilter
 network/rsync
