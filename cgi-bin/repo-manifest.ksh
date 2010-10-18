@@ -1,6 +1,6 @@
 #!/bin/ksh
 
-IPS_REPO="/export/install/repo"
+IPS_REPO="$(dirname $(whence $0))/../repo"
 
 PKG_FULL=$(echo "$REQUEST_URI" |
   sed 's,.*/manifest/0/,,'     |

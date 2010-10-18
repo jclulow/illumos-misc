@@ -18,7 +18,12 @@
 
 # IPS Repository Vhost:
 <VirtualHost *:10000>
-  DocumentRoot "/export/install/repo"
+  DocumentRoot "/export/install/htdocs"
+  <Directory "/export/install/htdocs">
+    Options -All
+    Order allow,deny
+    Allow from all
+  </Directory>
   <Directory "/export/install/repo">
     Options -All
     Order allow,deny
