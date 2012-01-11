@@ -230,12 +230,14 @@
 		     If you want to use one or more  mirrors that are
 		     setup for the authority, specify the urls here.
 		-->
+<!--
 		<pkg_repo_addl_authority>
 			<main
 				url="http://pkg.openindiana.org/legacy"
 				authname="opensolaris.org"/>
 			<mirror url="" />
 		</pkg_repo_addl_authority>
+-->
 		<!--
 		     The default preferred authority to be used by the system
 		     after it has been installed.
@@ -287,215 +289,16 @@
 
 			    <pkg name="pkg:/entire@0.5.11-0.build#/>
 			-->
-			<pkg name="pkg:/entire@0.5.11-0.147"/>
-			<pkg name="pkg:/SUNWcs"/>
-			<pkg name="pkg:/SUNWcsd"/>
-			<pkg name="pkg:/compress/bzip2"/>
-			<pkg name="pkg:/compress/gzip"/>
-			<pkg name="pkg:/compress/p7zip"/>
-			<pkg name="pkg:/compress/unzip"/>
-			<pkg name="pkg:/compress/zip"/>
-			<pkg name="pkg:/data/iso-codes"/>
-			<pkg name="pkg:/developer/debug/mdb"/>
-			<pkg name="pkg:/developer/debug/mdb/module/module-fibre-channel"/>
-			<pkg name="pkg:/developer/debug/mdb/module/module-qlc"/>
-			<pkg name="pkg:/developer/dtrace"/>
-			<pkg name="pkg:/developer/dtrace/toolkit"/>
-			<pkg name="pkg:/developer/linker"/>
-			<pkg name="pkg:/developer/macro/cpp"/>
-			<pkg name="pkg:/developer/object-file"/>
-			<pkg name="pkg:/diagnostic/cpu-counters"/>
-			<pkg name="pkg:/diagnostic/ddu"/>
-			<pkg name="pkg:/driver/crypto/tpm"/>
-			<pkg name="pkg:/driver/firewire"/>
-			<pkg name="pkg:/driver/graphics/agpgart"/>
-			<pkg name="pkg:/driver/graphics/atiatom"/>
-			<pkg name="pkg:/driver/graphics/drm"/>
-			<pkg name="pkg:/driver/i86pc/fipe"/>
-			<pkg name="pkg:/driver/i86pc/ioat"/>
-			<pkg name="pkg:/driver/i86pc/platform"/>
-			<pkg name="pkg:/driver/network/afe"/>
-			<pkg name="pkg:/driver/network/amd8111s"/>
-			<pkg name="pkg:/driver/network/arn"/>
-			<pkg name="pkg:/driver/network/atge"/>
-			<pkg name="pkg:/driver/network/ath"/>
-			<pkg name="pkg:/driver/network/atu"/>
-			<pkg name="pkg:/driver/network/bfe"/>
-			<pkg name="pkg:/driver/network/bge"/>
-			<pkg name="pkg:/driver/network/bnx"/>
-			<pkg name="pkg:/driver/network/bnxe"/>
-			<pkg name="pkg:/driver/network/bpf"/>
-			<pkg name="pkg:/driver/network/ce"/>
-			<pkg name="pkg:/driver/network/chxge"/>
-			<pkg name="pkg:/driver/network/dmfe"/>
-			<pkg name="pkg:/driver/network/e1000g"/>
-			<pkg name="pkg:/driver/network/fcip"/>
-			<pkg name="pkg:/driver/network/fcp"/>
-			<pkg name="pkg:/driver/network/fcsm"/>
-			<pkg name="pkg:/driver/network/fp"/>
-			<pkg name="pkg:/driver/network/hxge"/>
-			<pkg name="pkg:/driver/network/ib"/>
-			<pkg name="pkg:/driver/network/ibd"/>
-			<pkg name="pkg:/driver/network/igb"/>
-			<pkg name="pkg:/driver/network/ipw"/>
-			<pkg name="pkg:/driver/network/iwh"/>
-			<pkg name="pkg:/driver/network/iwi"/>
-			<pkg name="pkg:/driver/network/iwk"/>
-			<pkg name="pkg:/driver/network/iwp"/>
-			<pkg name="pkg:/driver/network/ixgb"/>
-			<pkg name="pkg:/driver/network/ixgbe"/>
-			<pkg name="pkg:/driver/network/mwl"/>
-			<pkg name="pkg:/driver/network/mxfe"/>
-			<pkg name="pkg:/driver/network/myri10ge"/>
-			<pkg name="pkg:/driver/network/nge"/>
-			<pkg name="pkg:/driver/network/ntxn"/>
-			<pkg name="pkg:/driver/network/nxge"/>
-			<pkg name="pkg:/driver/network/pcan"/>
-			<pkg name="pkg:/driver/network/pcwl"/>
-			<pkg name="pkg:/driver/network/platform"/>
-			<pkg name="pkg:/driver/network/qlc"/>
-			<pkg name="pkg:/driver/network/ral"/>
-			<pkg name="pkg:/driver/network/rge"/>
-			<pkg name="pkg:/driver/network/rpcib"/>
-			<pkg name="pkg:/driver/network/rtls"/>
-			<pkg name="pkg:/driver/network/rtw"/>
-			<pkg name="pkg:/driver/network/rum"/>
-			<pkg name="pkg:/driver/network/rwd"/>
-			<pkg name="pkg:/driver/network/rwn"/>
-			<pkg name="pkg:/driver/network/sdp"/>
-			<pkg name="pkg:/driver/network/sdpib"/>
-			<pkg name="pkg:/driver/network/sfe"/>
-			<pkg name="pkg:/driver/network/tavor"/>
-			<pkg name="pkg:/driver/network/uath"/>
-			<pkg name="pkg:/driver/network/ural"/>
-			<pkg name="pkg:/driver/network/urtw"/>
-			<pkg name="pkg:/driver/network/vr"/>
-			<pkg name="pkg:/driver/network/wpi"/>
-			<pkg name="pkg:/driver/network/xge"/>
-			<pkg name="pkg:/driver/network/yge"/>
-			<pkg name="pkg:/driver/network/zyd"/>
-			<pkg name="pkg:/driver/pcmcia"/>
-			<pkg name="pkg:/driver/serial/pcser"/>
-			<pkg name="pkg:/driver/serial/usbftdi"/>
-			<pkg name="pkg:/driver/serial/usbsacm"/>
-			<pkg name="pkg:/driver/serial/usbser_edge"/>
-			<pkg name="pkg:/driver/serial/usbser"/>
-			<pkg name="pkg:/driver/serial/usbsksp"/>
-			<pkg name="pkg:/driver/serial/usbsksp/usbs49_fw"/>
-			<pkg name="pkg:/driver/serial/usbsprl"/>
-			<pkg name="pkg:/driver/storage/aac"/>
-			<pkg name="pkg:/driver/storage/adpu320"/>
-			<pkg name="pkg:/driver/storage/ahci"/>
-			<pkg name="pkg:/driver/storage/amr"/>
-			<pkg name="pkg:/driver/storage/arcmsr"/>
-			<pkg name="pkg:/driver/storage/ata"/>
-			<pkg name="pkg:/driver/storage/bcm_sata"/>
-			<pkg name="pkg:/driver/storage/cpqary3"/>
-			<pkg name="pkg:/driver/storage/glm"/>
-			<pkg name="pkg:/driver/storage/lsimega"/>
-			<pkg name="pkg:/driver/storage/marvell88sx"/>
-			<pkg name="pkg:/driver/storage/mega_sas"/>
-			<pkg name="pkg:/driver/storage/mpt_sas"/>
-			<pkg name="pkg:/driver/storage/mr_sas"/>
-			<pkg name="pkg:/driver/storage/nv_sata"/>
-			<pkg name="pkg:/driver/storage/pcata"/>
-			<pkg name="pkg:/driver/storage/pmcs"/>
-			<pkg name="pkg:/driver/storage/sbp2"/>
-			<pkg name="pkg:/driver/storage/scsa1394"/>
-			<pkg name="pkg:/driver/storage/sdcard"/>
-			<pkg name="pkg:/driver/storage/ses"/>
-			<pkg name="pkg:/driver/storage/si3124"/>
-			<pkg name="pkg:/driver/storage/smp"/>
-			<pkg name="pkg:/driver/usb"/>
-			<pkg name="pkg:/driver/usb/ugen"/>
-			<pkg name="pkg:/driver/xvm/pv"/>
-			<pkg name="pkg:/library/libtecla"/>
-			<pkg name="pkg:/library/libxml2"/>
-			<pkg name="pkg:/library/libxslt"/>
-			<pkg name="pkg:/library/security/openssl"/>
-			<pkg name="pkg:/library/zlib"/>
-			<pkg name="pkg:/media/cdrtools"/>
-			<pkg name="pkg:/network/ftp"/>
-			<pkg name="pkg:/network/ipfilter"/>
-			<pkg name="pkg:/network/iscsi/initiator"/>
-			<pkg name="pkg:/network/rsync"/>
-			<pkg name="pkg:/network/ssh"/>
-			<pkg name="pkg:/network/ssh/ssh-key"/>
-			<pkg name="pkg:/network/telnet"/>
-			<pkg name="pkg:/package/pkg"/>
-			<pkg name="pkg:/package/svr4"/>
-			<pkg name="pkg:/release/name"/>
-			<pkg name="pkg:/service/fault-management"/>
-			<pkg name="pkg:/service/management/sysidtool"/>
-			<pkg name="pkg:/service/network/dns/mdns"/>
-			<pkg name="pkg:/service/network/network-clients"/>
-			<pkg name="pkg:/service/network/network-servers"/>
-			<pkg name="pkg:/service/network/ntp"/>
-			<pkg name="pkg:/service/network/smtp/sendmail"/>
-			<pkg name="pkg:/service/network/ssh"/>
-			<pkg name="pkg:/service/network/tftp"/>
-			<pkg name="pkg:/service/network/wpa"/>
-			<pkg name="pkg:/service/picl"/>
-			<pkg name="pkg:/service/resource-pools"/>
-			<pkg name="pkg:/service/security/kerberos-5"/>
-			<pkg name="pkg:/service/storage/fibre-channel/fc-fabric"/>
-			<pkg name="pkg:/service/storage/removable-media"/>
-			<pkg name="pkg:/shell/bash"/>
-			<pkg name="pkg:/storage/mpathadm"/>
-			<pkg name="pkg:/storage/svm"/>
-			<pkg name="pkg:/system/accounting/legacy"/>
-			<pkg name="pkg:/system/boot/grub"/>
-			<pkg name="pkg:/system/boot/real-mode"/>
-			<pkg name="pkg:/system/boot/wanboot"/>
-			<pkg name="pkg:/system/data/keyboard/keytables"/>
-			<pkg name="pkg:/system/data/terminfo"/>
-			<pkg name="pkg:/system/extended-system-utilities"/>
-			<pkg name="pkg:/system/file-system/autofs"/>
-			<pkg name="pkg:/system/file-system/nfs"/>
-			<pkg name="pkg:/system/file-system/smb"/>
-			<pkg name="pkg:/system/file-system/udfs"/>
-			<pkg name="pkg:/system/file-system/zfs"/>
-			<pkg name="pkg:/system/flash/fwflash"/>
-			<pkg name="pkg:/system/install"/>
-			<pkg name="pkg:/system/install/auto-install"/>
+			<pkg name="pkg:/entire@0.5.11-0.151.1"/>
 			<pkg name="pkg:/system/install/media/internal"/>
-			<pkg name="pkg:/system/install/tests"/>
-			<pkg name="pkg:/system/kernel"/>
-			<pkg name="pkg:/system/kernel/cpu-counters"/>
-			<pkg name="pkg:/system/kernel/dtrace/providers"/>
-			<pkg name="pkg:/system/kernel/platform"/>
-			<pkg name="pkg:/system/kernel/power"/>
-			<pkg name="pkg:/system/kernel/suspend-resume"/>
-			<pkg name="pkg:/system/kernel/ultra-wideband"/>
-			<pkg name="pkg:/system/library"/>
-			<pkg name="pkg:/system/library/iconv/xsh4/eastern-european"/>
-			<pkg name="pkg:/system/library/install"/>
-			<pkg name="pkg:/system/library/mozilla-nss"/>
-			<pkg name="pkg:/system/library/platform"/>
-			<pkg name="pkg:/system/library/processor"/>
-			<pkg name="pkg:/system/library/storage/fibre-channel/hbaapi"/>
-			<pkg name="pkg:/system/library/storage/fibre-channel/libsun_fc"/>
-			<pkg name="pkg:/system/library/storage/libmpscsi_vhci"/>
-			<pkg name="pkg:/system/library/sysidtool"/>
-			<pkg name="pkg:/system/management/intel-amt"/>
-			<pkg name="pkg:/system/management/sysidtool"/>
-			<pkg name="pkg:/system/network"/>
-			<pkg name="pkg:/system/network/nis"/>
-			<pkg name="pkg:/system/network/routing"/>
-			<pkg name="pkg:/system/network/spdadm"/>
-			<pkg name="pkg:/system/network/wificonfig"/>
-			<pkg name="pkg:/system/prerequisite/gnu"/>
-			<pkg name="pkg:/system/scheduler/fss"/>
-			<pkg name="pkg:/system/storage/fibre-channel/port-utility"/>
-			<pkg name="pkg:/system/storage/luxadm"/>
-			<pkg name="pkg:/system/xopen/xcu4"/>
-			<pkg name="pkg:/system/zones"/>
-			<pkg name="pkg:/text/locale"/>
-			<pkg name="pkg:/web/wget"/>
+			<pkg name="pkg:/auto_install"/>
 		</packages>
 <!--
      Items below this line are rarely configured
 -->
+		<post_install_remove_packages>
+			<pkg name="pkg:/auto_install"/>
+		</post_install_remove_packages>
 		<!--
 		     If/how to compress the live image.
 		     type = compression algorithm to use for pkg.zlib and misc.zlib.
@@ -573,7 +376,7 @@
 			<base_include type="file">usr/lib/libpool.so.1</base_include>
 			<base_include type="file">usr/lib/libidmap.so.1</base_include>
 			<base_include type="file">usr/lib/libldap.so.5</base_include>
-			<base_include type="file">usr/lib/libldap.so.1</base_include>
+			<base_include type="file">usr/lib/libsldap.so.1</base_include>
 			<base_include type="file">usr/lib/libadutils.so.1</base_include>
 			<base_include type="file">usr/lib/libsasl.so.1</base_include>
 			<base_include type="file">usr/lib/mps/libnspr4.so</base_include>
@@ -651,6 +454,11 @@
 			<base_include type="file">usr/lib/libdll.so.1</base_include>
 			<base_include type="file">usr/lib/libshell.so.1</base_include>
 			<base_include type="file">usr/lib/libcrypt.so.1</base_include>
+			<base_include type="file">usr/lib/inet/wanboot/netbootinfo</base_include>
+
+			<!-- Libraries needed for netbootinfo binary -->
+			<base_include type="file">usr/lib/libwanbootutil.so.1</base_include>
+			<base_include type="file">usr/lib/libwanboot.so.1</base_include>
 
 			<!-- libraries needed by /usr/bin/wget -->
 			<base_include type="file">usr/lib/libidn.so.11</base_include>

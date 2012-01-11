@@ -41,10 +41,11 @@
   SetEnvIf Request_URI .*/file/[01]/.* no-gzip no-vary
   Header set Cache-Control no-cache
   RewriteEngine On
-  RewriteRule ^/file/[01]/(..)(.*) /export/install/repo/file/$1/$1$2
-  RewriteRule ^/catalog/[01]/(.*)  /export/install/repo/catalog/$1
-  RewriteRule ^/versions/([0])/    /versions/$1
-  RewriteRule ^/publisher/([01])/  /publisher/$1
-  ScriptAliasMatch ^/manifest/0.*  /export/install/cgi-bin/repo-manifest.ksh
-</VirtualHost>
+  RewriteRule ^/.*/*file/[01]/(..)(.*) /export/install/repo/file/$1/$1$2
+  RewriteRule ^/.*/*catalog/[01]/(.*)  /export/install/repo/catalog/$1
+  RewriteRule ^/.*/*versions/([0])/    /versions/$1
+  RewriteRule ^/.*/*publisher/([01])/  /publisher/$1
+  ScriptAliasMatch ^/.*/*manifest/0.*  /export/install/cgi-bin/repo-manifest.ksh
 
+  RewriteRule ^/openindiana.org/search/(.*) http://pkg.openindiana.org/dev/openindiana.org/search/$1 [P,L]
+</VirtualHost>

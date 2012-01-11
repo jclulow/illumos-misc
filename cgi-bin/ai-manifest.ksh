@@ -2,8 +2,7 @@
 
 PKG_LIST_FILE="$(dirname $(whence $0))/PACKAGES_LIST"
 REPO_URL_MAIN="http://pkg.openindiana.org/dev"
-REPO_URL_LGCY="http://pkg.openindiana.org/legacy"
-
+REPO_URL_SFE="http://pkg.openindiana.org/sfe"
 
 echo "Content-type: text/xml"
 echo
@@ -21,8 +20,8 @@ case "$REQUEST_METHOD" in
         </publisher>
       </source>
       <source>
-        <publisher name="opensolaris.org">
-          <origin name="${REPO_URL_LGCY}"/>
+        <publisher name="sfe">
+          <origin name="${REPO_URL_SFE}"/>
         </publisher>
       </source>
       <software_data action="install" type="IPS">
